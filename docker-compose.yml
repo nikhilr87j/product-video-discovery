@@ -1,0 +1,25 @@
+# One command: docker compose up --build   ->  http://localhost:8080
+# Without a .env file the backend runs in demo (mock) mode.
+services:
+  backend:
+    build: ./backend
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      PORT: 4000
+      DB_PATH: /app/data/pvd.sqlite
+    volumes:
+      - pvd-data:/app/data
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  pvd-data:
